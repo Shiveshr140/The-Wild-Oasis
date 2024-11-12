@@ -1,3 +1,4 @@
+import { createContext, useContext } from "react";
 import styled from "styled-components";
 
 const StyledTable = styled.div`
@@ -58,3 +59,82 @@ const Empty = styled.p`
   text-align: center;
   margin: 2.4rem;
 `;
+
+////******************************************* Building Reusable Table with compound component
+// role="table" for accessibility resaons
+
+// const TableContext = createContext();
+
+// function Table({ children, columns }) {
+//   return (
+//     <TableContext.Provider value={{ columns }}>
+//       <StyledTable role="table">{children}</StyledTable>
+//     </TableContext.Provider>
+//   );
+// }
+
+// function Header({ children }) {
+//   const { columns } = useContext(TableContext);
+//   return (
+//     <StyledHeader role="row" columns={columns} as="Header">
+//       {children}
+//     </StyledHeader>
+//   );
+// }
+// function Row({ children }) {
+//   const { columns } = useContext(TableContext);
+//   return (
+//     <StyledRow role="row" columns={columns}>
+//       {children}
+//     </StyledRow>
+//   );
+// }
+// function Body() {}
+
+// Table.Header = Header;
+// Table.Row = Row;
+// Table.Body = Body;
+// // And finally, table.footer can be just the footer component that we have here. So just the styled component because we don't need to add any logic to this one. So the footer has no columns.
+// Table.Footer = Footer;
+// export default Table;
+
+////**********************************************  Applying the Render Props Pattern
+// Small use case of render props pattern is to implement table body which was left above
+
+const TableContext = createContext();
+
+function Table({ children, columns }) {
+  return (
+    <TableContext.Provider value={{ columns }}>
+      <StyledTable role="table">{children}</StyledTable>
+    </TableContext.Provider>
+  );
+}
+
+function Header({ children }) {
+  const { columns } = useContext(TableContext);
+  return (
+    <StyledHeader role="row" columns={columns} as="Header">
+      {children}
+    </StyledHeader>
+  );
+}
+function Row({ children }) {
+  const { columns } = useContext(TableContext);
+  return (
+    <StyledRow role="row" columns={columns}>
+      {children}
+    </StyledRow>
+  );
+}
+function Body({ data, render }) {
+  if (!data.length) return <Empty>No data to show at the moment</Empty>;
+  return <StyledBody>{data.map(render)}</StyledBody>;
+}
+
+Table.Header = Header;
+Table.Row = Row;
+Table.Body = Body;
+// And finally, table.footer can be just the footer component that we have here. So just the styled component because we don't need to add any logic to this one. So the footer has no columns.
+Table.Footer = Footer;
+export default Table;

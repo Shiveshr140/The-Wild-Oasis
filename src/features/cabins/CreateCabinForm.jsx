@@ -680,11 +680,18 @@ import { useEditCabin } from "./useEditCabin";
 
 // export default CreateCabinForm;
 
-////********************************************************************** Abstracting React Query Into Custom Hooks
+////********************************************************************** Abstracting React Query Into Custom Hooks & Add Modal
 // useCreateCabin.jsx, only problem is with reset but react quesry has its sollution we can place this on success handler function not only right there but also right in the function where the mutation actually happens so all we need to do is to pass in an object of options and so then there we can do on success and then here we can very simply call the reset function
 // and also this call back right here actually gets access to the data that the mutation function returns or in other words we can here get access to this new cabin data that we return right here
 
-function CreateCabinForm({ cabinToEdit = {} }) {
+// if this form is ever used in some place where it isn't contained in a modal then it's not going to receive this onCloseModal prop, right? And so that means
+// that we need to call this function here conditionally because again, it might not even exist. And so in that case, if it doesn't exist, then this will create a bug.
+// So onSuccess, so after the cabin has been created or after it has been edited, then let's also close the modal.
+
+// Lets fix styling type prop in Form below then Form.jsx set default prop
+// Modal.jsx => add react portal
+
+function CreateCabinForm({ cabinToEdit = {}, onCloseModal }) {
   const { id: editId, ...editValues } = cabinToEdit;
   const isEditSession = Boolean(editId);
   const { isCreating, createCabin } = useCreateCabin();
@@ -705,10 +712,23 @@ function CreateCabinForm({ cabinToEdit = {} }) {
     if (isEditSession) {
       editCabin(
         { newCabinData: { ...data, image }, id: editId },
-        { onSuccess: (data) => reset() }
+        {
+          onSuccess: (data) => {
+            reset();
+            onCloseModal?.();
+          },
+        }
       );
     } else {
-      createCabin({ ...data, image: image }, { onSuccess: (data) => reset() });
+      createCabin(
+        { ...data, image: image },
+        {
+          onSuccess: (data) => {
+            reset();
+            onCloseModal?.();
+          },
+        }
+      );
     }
   }
 
@@ -718,7 +738,10 @@ function CreateCabinForm({ cabinToEdit = {} }) {
   }
 
   return (
-    <Form onSubmit={handleSubmit(onSubmit, onError)}>
+    <Form
+      onSubmit={handleSubmit(onSubmit, onError)}
+      type={onCloseModal ? "modal" : "regular"}
+    >
       <FormRow label="name" error={errors?.name?.message}>
         <Input
           type="text"
@@ -805,7 +828,11 @@ function CreateCabinForm({ cabinToEdit = {} }) {
 
       <FormRow>
         {/* type is an HTML attribute! */}
-        <Button variation="secondary" type="reset">
+        <Button
+          variation="secondary"
+          type="reset"
+          onClick={() => onCloseModal?.()}
+        >
           Cancel
         </Button>
         <Button disabled={isWorking} type="submit">

@@ -1,10 +1,5 @@
 import React from "react";
-import styled from "styled-components";
 import { GlobalStyles } from "./styles/GlobalStyles";
-import Button from "./ui/Button";
-import Input from "./ui/Input";
-import Heading from "./ui/Heading";
-import Row from "./ui/Row";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import Dashboard from "./pages/Dashboard";
 import Account from "./pages/Account";
@@ -264,6 +259,88 @@ import { Toaster } from "react-hot-toast";
 // Lets update each of the settings value individually by using a very nice, clever trick.
 // look at apiSettings.js update function
 // create custom hook useEditSettings.js same as useEditCabin.js
+
+// const queryClient = new QueryClient({
+//   defaultOptions: {
+//     queries: {
+//       // staleTime: 60 * 1000,
+//       staleTime: 0,
+//     },
+//   },
+// });
+
+// function App() {
+//   return (
+//     <QueryClientProvider client={queryClient}>
+//       <ReactQueryDevtools initialIsOpen={false} />
+//       <GlobalStyles />
+//       <BrowserRouter>
+//         <Routes>
+//           <Route element={<AppLayout />}>
+//             <Route path="dashboard" element={<Dashboard />} />
+//             <Route path="account" element={<Account />} />
+//             <Route path="cabins" element={<Cabins />} />
+//             <Route path="bookings" element={<Bookings />} />
+//             <Route path="settings" element={<Settings />} />
+//             <Route path="users" element={<Users />} />
+//           </Route>
+//           <Route index element={<Navigate replace to="dashboard" />} />
+//           <Route path="login" element={<Login />} />
+//           <Route path="*" element={<PageNotFound />} />
+//         </Routes>
+//       </BrowserRouter>
+//       <Toaster
+//         position="top-center"
+//         gutter={12}
+//         containerStyle={{ margin: "12px" }}
+//         toastOptions={{
+//           success: {
+//             duration: 3000,
+//           },
+//           error: {
+//             duration: 5000,
+//           },
+//           style: {
+//             fontSize: "16px",
+//             maxWidth: "500px",
+//             padding: "16px 24px",
+//             backgroundColor: "var(--color-grey-0)",
+//           },
+//         }}
+//       />
+//     </QueryClientProvider>
+//   );
+// }
+
+// export default App;
+
+////************************************************************************ Advanced React Pattern
+
+////************************** Building a Modal Window Using a React Portal
+// build a simple modal window component using React's portal feature so that we can then convert this modal to a compound component. So as I have mentioned earlier here in our cabins page we actually want this form to add a new cabin to appear in a modal window. So not just here rendered on the page but we want basically a new window to open on top of this and then display our form in there.
+// And so let's now build that reusable modal component.
+// cabins.jsx => AddCabin.jsx => Modal.jsx => CreatCabinform.jsx => Modal.jsx(React Portal)
+
+////**************************** Converting the Modal to a Compound Component
+// AddCabin.jsx => modal.jsx
+
+////***************************** Detecting a Click Outside the Modal
+// Modal.jsx, hooks/useClickOutside.jsx
+
+////*********************************************  Confirming Cabin Deletions
+// let's actually reuse this modal window both for the deleting and for editing.
+// CabinRow.jsx => ConfirmDelete.jsx
+
+////******************************************** Building a Reusable Table
+// CabinTable.jsx, Table.jsx
+
+////**********************************************  Applying the Render Props Pattern
+// Small use case of render props pattern is to implement table body which was left above
+// CabinsTable.jsx, Table.jsx
+
+////********************************************** Building a Reusable Context Menu
+// Now what's special about these menus is that only one of them can be open at the same time, which means that we need to wrap the entire table here into that menus component that we are going to build. And then inside each of the rows, we will have a menu child component.
+// Menu.jsx => wrap table of CabinTable.jsx inside <Menu> </Menu>
 
 const queryClient = new QueryClient({
   defaultOptions: {

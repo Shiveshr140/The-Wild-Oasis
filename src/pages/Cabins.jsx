@@ -1,9 +1,7 @@
 import Heading from "../ui/Heading";
 import Row from "../ui/Row";
 import CabinTable from "../features/cabins/CabinTable";
-import Button from "../ui/Button";
-import { useState } from "react";
-import CreateCabinForm from "../features/cabins/CreateCabinForm";
+import AddCabin from "../features/cabins/AddCabin";
 // import { useEffect } from "react";
 // import { getCabins } from "../services/apiCabins";
 
@@ -54,11 +52,35 @@ import CreateCabinForm from "../features/cabins/CreateCabinForm";
 // export default Cabins;
 
 ////************************************************ React Hook Form
-// add temprrry state
+// add temprory state
 // go and set up that React hook library createCabinForm.jsx
 
+// function Cabins() {
+//   const [showForm, setShowForm] = useState(false);
+//   return (
+//     <>
+//       <Row type="horizontal">
+//         <Heading as="h1">All cabins</Heading>
+//         <p>Filter/Sort</p>
+//       </Row>
+//       <Row>
+//         <CabinTable />
+//         <Button onClick={() => setShowForm((prev) => !prev)}>
+//           Add new cabin
+//         </Button>
+//         {showForm && <CreateCabinForm />}
+//       </Row>
+//     </>
+//   );
+// }
+
+// export default Cabins;
+
+////********************************************************* Advanced React Pattern
+// What I want that instead of showing form blow, it should be shown at the top
+// lets make simple by moving logic to AddCabin.jsx
+
 function Cabins() {
-  const [showForm, setShowForm] = useState(false);
   return (
     <>
       <Row type="horizontal">
@@ -67,10 +89,7 @@ function Cabins() {
       </Row>
       <Row>
         <CabinTable />
-        <Button onClick={() => setShowForm((prev) => !prev)}>
-          Add new cabin
-        </Button>
-        {showForm && <CreateCabinForm />}
+        <AddCabin />
       </Row>
     </>
   );
