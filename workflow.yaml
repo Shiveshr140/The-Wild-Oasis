@@ -1,0 +1,32 @@
+name: build and deploy to netlify
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: ${{matrix.os}}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macOS-latest]
+
+    steps:
+      - name: checkout code
+        uses: actions@checkoutv2
+      - name: install dependencies
+        run: npm install
+
+      - name: build
+        run: npm run build
+        # Step 2: Install Netlify CLI (Only if not installed globally already)
+      - name: Install Netlify CLI
+        run: npm install -g netlify-cli
+
+      # Step 3: Deploy to the Recipe-Finder site using the site ID
+      - name: Deploy to Recipe-Finder Site
+        run: |
+          netlify deploy --prod --dir=./ --site ${{ secrets.NETLIFY_SITE_ID }}
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
