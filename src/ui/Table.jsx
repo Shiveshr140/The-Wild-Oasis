@@ -44,7 +44,8 @@ const StyledBody = styled.section`
 const Footer = styled.footer`
   background-color: var(--color-grey-50);
   display: flex;
-  justify-content: center;
+  /* justify-content: center; */
+  align-items: center;
   padding: 1.2rem;
 
   /* This will hide the footer when it contains no child elements. Possible thanks to the parent selector :has 🎉 */

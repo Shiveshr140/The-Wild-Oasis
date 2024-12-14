@@ -13,6 +13,9 @@ import AppLayout from "./ui/AppLayout";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { Toaster } from "react-hot-toast";
+import Booking from "./pages/Booking";
+import Checkin from "./pages/Checkin";
+import ProtectedRoute from "./ui/ProtectedRoute";
 
 ////******************************************* Setting Up Pages and Routes
 // "npm i react-router@6"
@@ -342,6 +345,168 @@ import { Toaster } from "react-hot-toast";
 // Now what's special about these menus is that only one of them can be open at the same time, which means that we need to wrap the entire table here into that menus component that we are going to build. And then inside each of the rows, we will have a menu child component.
 // Menu.jsx => wrap table of CabinTable.jsx inside <Menu> </Menu>
 
+// const queryClient = new QueryClient({
+//   defaultOptions: {
+//     queries: {
+//       // staleTime: 60 * 1000,
+//       staleTime: 0,
+//     },
+//   },
+// });
+
+// function App() {
+//   return (
+//     <QueryClientProvider client={queryClient}>
+//       <ReactQueryDevtools initialIsOpen={false} />
+//       <GlobalStyles />
+//       <BrowserRouter>
+//         <Routes>
+//           <Route element={<AppLayout />}>
+//             <Route path="dashboard" element={<Dashboard />} />
+//             <Route path="account" element={<Account />} />
+//             <Route path="cabins" element={<Cabins />} />
+//             <Route path="bookings" element={<Bookings />} />
+//             <Route path="settings" element={<Settings />} />
+//             <Route path="users" element={<Users />} />
+//           </Route>
+//           <Route index element={<Navigate replace to="dashboard" />} />
+//           <Route path="login" element={<Login />} />
+//           <Route path="*" element={<PageNotFound />} />
+//         </Routes>
+//       </BrowserRouter>
+//       <Toaster
+//         position="top-center"
+//         gutter={12}
+//         containerStyle={{ margin: "12px" }}
+//         toastOptions={{
+//           success: {
+//             duration: 3000,
+//           },
+//           error: {
+//             duration: 5000,
+//           },
+//           style: {
+//             fontSize: "16px",
+//             maxWidth: "500px",
+//             padding: "16px 24px",
+//             backgroundColor: "var(--color-grey-0)",
+//           },
+//         }}
+//       />
+//     </QueryClientProvider>
+//   );
+// }
+
+// export default App;
+
+////***************************************************************************** Implementing more feature
+////***********************************  Client-Side Filtering: Filtering Cabins
+// Let's make the cabin table filterable as well. So basically we want the ability to filter this table here by whether there is a discount or not. So we're gonna add some buttons here, where the user can click that they want all the cabins or only the cabins with a discount or only the cabins without a discount.
+// Now we will do this in practice by storing the value by which the table should be filtered in the URL again. Because this way the URL is gonna be easily shareable and bookmarkable. So just like we have talked about earlier. Now, this means that the component where we select these values is where we will update the URL state. And since we can read that state from everywhere in the app,
+// the filter component doesn't have to be close to the cabin table. So it can really be anywhere we want in the component tree. And so let's now come back here to the application and place that component right here. So again, if we were using the use they took to store the value by which the table should be filtered, then this table here would have to be a child component of the component that owns that state.
+// But like this, since we are storing that state in the URL, then that filter component can be really anywhere that we want.
+// Pages/Cabin.jsx => filter.jsx => CabinTable.jsx
+
+////************************************* Client-Side Sorting: Sorting Cabins
+// create ui/SortBy.jsx as we gonna use it elsewhere
+// Add this in CabinTableOperations.jsx
+// Build Select.jsx
+// CabinTable.jsx
+
+////****************************************  Building the Bookings Table
+// apiBookings create books for all of them
+// pages/Bookings.jsx
+// BookingTable.jsx
+
+////******************************************  Uploading Sample Data
+// we have js files that has data-bookings.js ...etc
+// We have Uploader.jsx go through
+// What matters is that we can now import this component, and then that will give us two buttons. One will be to upload all sample data, which we'll first delete all of them, and then create new ones. And then we will get a button to only upload the bookings. this uploader component right here.
+// And so we will now include this in our sidebar, so like down here so that during development, we can keep it there, and re-upload our sample data whenever we need it. So here in our sidebar bar,
+// Go Sidebar.jsx add <Uploader />
+// When you try to upload the all then you will get an error reason is we didn't set the role-level security policies on the bookings table yet. So let's go do that here in Authentication, and then Policies. And indeed we have this on the cabins and even the settings, but not on the guests and the bookings. And so let's now, again, do all of that.
+// We have not set RLC policies for Bookings/Guests and remember later it will be for authenticated users only
+
+////************************************* API-Side Filtering: Filtering Bookings
+// Go throw BookingTableOperation.jsx since we already have sort/filter we re-use them here
+// Bookings.jsx add BookingTableOperation.jsx
+
+// Now this time, we will actually do it in a fundamentally way than what we did with the cabins. So with the cabins, we received all the data from our supabase API in the table. And then there is where we did the filtering and the sorting. And so basically, those operations happened already
+// on the client side, but now with the bookings, we actually want to do it on the server side. So basically, on the API side of the data, or in other words, if I want to filter, for example, for "checked out," then I want the API to really only send me all the bookings that have the "checked out" status.
+// So I don't want to receive all of them, and then just filter them here on the client side. But instead, really only that filtered data should get downloaded from supabase. And so that means, that we need to implement things very differently.
+// what we need to do, is now here to change our supabase query.
+// Lets go apiBookings.jsx
+
+////****************************************  API-Side Sorting: Sorting Bookings
+// let's also perform the sorting operation on the server side. So basically, sorting the data right in the Supabase API.
+// useBookings.jsx, apiBookings.jsx
+
+////********************************************* Building a Reusable Pagination Component
+// To build the pagination feature, let's actually start by building a reusable pagination component that we could reuse for all kinds of data all over our application. So this pagination component is just gonna be a simple component that's similar to the filter, anti-SortBy components. In the sense that all that it's gonna do is to render a few buttons that will allow us to set the current page state to the URL,
+// so that then our use booking hooks here can get that data from the URL. So just like the filter and the sort data are also read from the URL.
+// Pagination.jsx include in BookingTable.jsx
+
+////****************************************** API-Side Pagination: Paginating Booking
+// We can calculate the length of bookings and pass it to the count but lets learn the new feature of Supabse API
+// apiBooking.jsx, useBookings.jsx, BookingTable.jsx
+// As we need the PAGE_SIZE const in apiBookings.jsx also so better to make a new file for constants utlis/constant.jsx
+
+////****************************************  Prefetching With React Query
+// Now suppose we have 4 pages now on first time at any page it will show an spinner but when you revisit that page again it won't show any spninner because date is comming from cache
+// Some times it is not a good experience because some of pages there is an spinner some times not so her Prefetching comes into play
+// Well, prefetching is all about fetching some data that we know might become necessary before we actually need that data to render it on the user interface. And in the context of pagination, usually that means that we fetch the next page before it is actually displayed.
+// So in this case, that would mean that here in page number seven, we would already have page number eight here in the cache and so then when we move there, this data from page number eight could simply be get from the cache and rendered.
+// apiBooking.jsx
+
+////**************************************** Building the Single Booking Page
+// BookingRow.jsx, create Pages/Booking.jsx and add booking route here
+// BookingDetail.jsx, apiBooking.jsx(read), create useBooking.jsx
+
+////*************************************** Checking In a Booking
+// Now, what's important to understand about this part is that a certain booking may not have been paid yet when the guest arrives. So, basically the idea is that a guest can make a booking, for example, on an online site, which can be made without payment. So, basically for the guest to only pay it at the hotel when they arrive. Now, what this means is that in these cases,
+// payment needs to be accepted at the hotel. This payment, however happens outside of the application. So, we will not have any payment processing integrated into our app. However, hotel employees need to confirm that they did in fact receive the payment as they check in a guest, and only then the guest can actually be checked in. Also, during checkout, guests should be able to buy breakfast for the entire stay if they hadn't done that already.
+// first of add a button in BookingRow menus and also in the BookingDetail page for this
+// BookingRow.jsx, BookingDetail.jsx
+// Add checkin route and add Checkin page
+
+////**************************************** Adding Optional Breakfast
+// CheckinBooking.jsx, useCheckin.jsx
+
+////*****************************************  Checking Out a Booking (+ Fixing a Small Bug)
+// BookingRow.jsx(add check out button), create useCheckout.jsx, BookingDetail.jsx
+// Bug is that when you are at last page and try to filter unconfirmed it will show the error, And what does happen is some kind of problem here. So let's see what we have here. And so here, indeed, an offset of 20 was requested,
+// but there are only 10 rows. And so the problem is that we are here still trying to request data for page number three. Even though with the status of unconfirmed, there are no three pages of data. So basically what we need to do, is whenever we set a new filter,
+// we also need to reset the page to one. And so let's just quickly come here to our filter component
+// Filter.jsx
+
+////***************************************** Deleting a Booking
+// BookingRow.jsx, create useDeleteBooking.jsx, BookingDetail.jsx
+
+////*********************************************  Authentication: User Login With Supabase
+// So at the very beginning we said that users actually need to be logged into the application in order to use it. And so now we're going to use Supabase to implement this super important part of this and of most other web applications. We will also use Supabase
+// to sign up users in the first place, to update their data and password and even to upload a user avatar.
+// Pages/Login.jsx, SupabseApi add User
+
+// let's actually finally head over to Supabase and create our very first user here. Now, remember how I mentioned earlier that the users are not a normal table right here but instead we come to the authentication tab and then here is where we have basically a table with our users. Now, before we create a new user here
+// let's first come to the providers here. And so here you can actually enable all kinds of different providers where by default we have the email provider activated. So basically this allows users to sign up using a password and an email. Now what I want you to do here is to deactivate this confirm email. So for now, we don't need this part because for development
+// this is going to be a bit easier, but here you can really use all kinds of third party services very easily, all integrated into Supabase. So you can have login with Apple or with GitHub and here you just have to set up a few things from your GitHub account. And then with that you can start accepting logins from GitHub.
+// In summary user is created at Authentication and email enaibled and in provider disabled confirm email.
+
+// Here in this application we will just use the very simple and standard email authentication. All right, so let's come back here to our users and let's add a new user. All right, so let's come back here to our users and let's add a new user. So here I will just use jonas@example.com but of course you can use any email that you want. And then here as a password, So then let's create our user.
+// And then all we have to do is to connect this entire thing with our front end. so let's then again come here to our API documentation. And then here, let's select authentication. So here to explain a little bit how authentication works here. And basically behind the scenes this is using the JWT technology which I'm not gonna go into here.
+// Read and use User Mangement, we are gonna use Login with Email first.
+// Create services/apiAuth.js, LoginForm.jsx, create useLogin.jsx
+
+////*********************************************** Authorization: Protecting Routes
+// Now let's implement authorization so that only logged in users can actually access our application. And the way we are going to implement this in practice is by basically wrapping the entire application here into a protected route component.
+// So remember that all of these routes right here are child routes of this layout route right here. Nowt hat means that basically all of these components, so all of these pages, are rendered inside this app layout component that we built earlier. And so what we're gonna do now is to wrap this app layout itself into that protected route component.
+// And so then that will mean that all of these different routes can only be accessed if the protected layout component determines that there is a currently logged in user.
+// Create ui/ProtectedRoute.jsx, wrap the <AppLayout />
+// apiAuth.jsx, create useUser.js
+
+////****************************************************  User Logout
+// create authentication/Logout.jsx, Header.jsx, apiAuth.jsx, useLogout.jsx
+
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -358,11 +523,19 @@ function App() {
       <GlobalStyles />
       <BrowserRouter>
         <Routes>
-          <Route element={<AppLayout />}>
+          <Route
+            element={
+              <ProtectedRoute>
+                <AppLayout />
+              </ProtectedRoute>
+            }
+          >
             <Route path="dashboard" element={<Dashboard />} />
             <Route path="account" element={<Account />} />
             <Route path="cabins" element={<Cabins />} />
             <Route path="bookings" element={<Bookings />} />
+            <Route path="bookings/:bookingId" element={<Booking />} />
+            <Route path="checkin/:bookingId" element={<Checkin />} />
             <Route path="settings" element={<Settings />} />
             <Route path="users" element={<Users />} />
           </Route>

@@ -1,4 +1,5 @@
 import styled, { css } from "styled-components";
+import { useSearchParams } from "react-router-dom";
 
 const StyledFilter = styled.div`
   border: 1px solid var(--color-grey-100);
@@ -28,8 +29,92 @@ const FilterButton = styled.button`
   padding: 0.44rem 0.8rem;
   transition: all 0.3s;
 
+  // hovered over and not disabled
   &:hover:not(:disabled) {
     background-color: var(--color-brand-600);
     color: var(--color-brand-50);
   }
 `;
+
+// function Filter() {
+//   const [searchParams, setSearchParams] = useSearchParams();
+//   function handleClick(value) {
+//     searchParams.set("discount", value);
+//     setSearchParams(searchParams);
+//   }
+//   return (
+//     <StyledFilter>
+//       <FilterButton onClick={() => handleClick("all")}>All</FilterButton>
+//       <FilterButton onClick={() => handleClick("no-discount")}>
+//         No discount
+//       </FilterButton>
+//       <FilterButton onClick={() => handleClick("with-discount")}>
+//         With discount
+//       </FilterButton>
+//     </StyledFilter>
+//   );
+// }
+
+// export default Filter;
+
+////**************************  Lets make it reusable
+// accept these  filterField, options  in CabinTableOperations.jsx
+
+// function Filter({ filterField, options }) {
+//   const [searchParams, setSearchParams] = useSearchParams();
+//   const currentFilter = searchParams.get(filterField) || options.at(0).value;
+
+//   function handleClick(value) {
+//     searchParams.set(filterField, value);
+//     setSearchParams(searchParams);
+//   }
+//   return (
+//     <StyledFilter>
+//       {options.map((option) => {
+//         return (
+//           <FilterButton
+//             key={option.value}
+//             onClick={() => handleClick(option.value)}
+//             active={option.value === currentFilter}
+//             disabled={option.value === currentFilter}
+//           >
+//             {option.label}
+//           </FilterButton>
+//         );
+//       })}
+//     </StyledFilter>
+//   );
+// }
+
+// export default Filter;
+
+////********************************** Fix the bug
+
+function Filter({ filterField, options }) {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const currentFilter = searchParams.get(filterField) || options.at(0).value;
+
+  function handleClick(value) {
+    searchParams.set(filterField, value);
+    if (searchParams.get("page")) searchParams.set("page", 1);
+    setSearchParams(searchParams);
+  }
+  return (
+    <StyledFilter>
+      {options.map((option) => {
+        return (
+          <FilterButton
+            key={option.value}
+            onClick={() => handleClick(option.value)}
+            active={option.value === currentFilter}
+            disabled={option.value === currentFilter}
+          >
+            {option.label}
+          </FilterButton>
+        );
+      })}
+    </StyledFilter>
+  );
+}
+
+export default Filter;

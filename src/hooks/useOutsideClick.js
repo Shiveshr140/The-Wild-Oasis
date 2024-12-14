@@ -11,7 +11,7 @@ export function useOutsideClick(handler, listenCapaturing = true) {
     }
     document.addEventListener("click", handleClick, listenCapaturing);
     return () => {
-      removeEventListener("click", handleClick, listenCapaturing);
+      document.removeEventListener("click", handleClick, listenCapaturing);
     };
   }, [handler, listenCapaturing]);
   return ref;

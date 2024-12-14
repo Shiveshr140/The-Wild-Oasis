@@ -13,3 +13,22 @@ const StyledSelect = styled.select`
   font-weight: 500;
   box-shadow: var(--shadow-sm);
 `;
+
+////************************************************** Client-Side Sorting: Sorting Cabins
+// Lets add this in SortBy.jsx
+// value is for currently selected
+// There is trick receiving remaining props using destructure ...props, to use these props in <StyledSelect> we just have to do the same just like react hook form
+function Select({ options, value, onChange, ...props }) {
+  console.log(props);
+  return (
+    <StyledSelect value={value} onChange={onChange} {...props}>
+      {options.map((option) => (
+        <option key={option.value} value={option.value}>
+          {option.label}
+        </option>
+      ))}
+    </StyledSelect>
+  );
+}
+
+export default Select;

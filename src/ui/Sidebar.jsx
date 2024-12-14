@@ -2,6 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import Logo from "./Logo";
 import MainNav from "./MainNav";
+import Uploader from "../data/Uploader";
 
 // // from the first row all the way to last grid-row: 1/-1;
 // const StyledSidebar = styled.aside`
@@ -40,6 +41,7 @@ function Sidebar() {
     <StyledSidebar>
       <Logo />
       <MainNav />
+      <Uploader />
     </StyledSidebar>
   );
 }
