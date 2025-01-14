@@ -8,7 +8,7 @@ import {
   ResponsiveContainer,
   Tooltip,
 } from "recharts";
-import { useLocalStorageState } from "../../hooks/useLocalStorageState";
+import { useDarkMode } from "../../context/DarkModeContext";
 
 const ChartBox = styled.div`
   /* Box */
@@ -174,7 +174,7 @@ function prepareData(startData, stays) {
 //// before using actual data makes the value 0 again
 
 export default function DurationChart({ confirmedStays }) {
-  const { isDarkMode } = useLocalStorageState();
+  const { isDarkMode } = useDarkMode();
   const startData = isDarkMode ? startDataDark : startDataLight;
   const data = prepareData(startData, confirmedStays);
   return (

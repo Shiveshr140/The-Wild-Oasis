@@ -11,7 +11,7 @@ import {
   YAxis,
 } from "recharts";
 import { eachDayOfInterval, format, isSameDay, subDays } from "date-fns";
-import { useLocalStorageState } from "../../hooks/useLocalStorageState";
+import { useDarkMode } from "../../context/DarkModeContext";
 
 const StyledSalesChart = styled(DashboardBox)`
   grid-column: 1 / -1;
@@ -177,7 +177,7 @@ const fakeData = [
 //// The totalSales in the given code is calculated by aggregating the totalPrice of all bookings made on a particular day.
 
 export default function SalesCharts({ bookings, numDays }) {
-  const { isDarkMode } = useLocalStorageState();
+  const { isDarkMode } = useDarkMode();
 
   const colors = isDarkMode
     ? {
