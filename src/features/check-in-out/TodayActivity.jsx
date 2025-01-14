@@ -2,6 +2,9 @@ import styled from "styled-components";
 
 import Heading from "../../ui/Heading";
 import Row from "../../ui/Row";
+import { useToadayActivity } from "./useTodayActivity";
+import Spinner from "../../ui/Spinner";
+import TodayItem from "./TodayItem";
 
 const StyledToday = styled.div`
   /* Box */
@@ -9,11 +12,11 @@ const StyledToday = styled.div`
   border: 1px solid var(--color-grey-100);
   border-radius: var(--border-radius-md);
 
-  padding: 3.2rem;
+  padding: 3.2rem 0.2rem;
   display: flex;
   flex-direction: column;
   gap: 2.4rem;
-  grid-column: 1 / span 2;
+  grid-column: 1 / 3;
   padding-top: 2.4rem;
 `;
 
@@ -36,14 +39,45 @@ const NoActivity = styled.p`
   margin-top: 0.8rem;
 `;
 
-function Today() {
+// function TodayActivity() {
+//   return (
+//     <StyledToday>
+//       <Row type="horizontal">
+//         <Heading as="h2">Today</Heading>
+//       </Row>
+//     </StyledToday>
+//   );
+// }
+
+// export default TodayActivity;
+
+///// **************************************** Displaying Stays for Current Day
+//// weird code below handles the situation if there is no activity for today along wityh loading
+
+function TodayActivity() {
+  const { activities, isLoading } = useToadayActivity();
+
   return (
     <StyledToday>
       <Row type="horizontal">
         <Heading as="h2">Today</Heading>
       </Row>
+
+      {!isLoading ? (
+        activities?.length > 0 ? (
+          <TodayList>
+            {activities.map((activity) => (
+              <TodayItem activity={activity} key={activity.id} />
+            ))}
+          </TodayList>
+        ) : (
+          <NoActivity>No activity today...</NoActivity>
+        )
+      ) : (
+        <Spinner />
+      )}
     </StyledToday>
   );
 }
 
-export default Today;
+export default TodayActivity;

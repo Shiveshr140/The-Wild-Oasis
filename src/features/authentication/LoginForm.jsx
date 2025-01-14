@@ -7,7 +7,7 @@ import SpinnerMini from "../../ui/SpinnerMini";
 import { useLogin } from "./useLogin";
 
 ////*********************** User Authentication
-// Lets check login apoAuth.js function
+// Lets check login appAuth.js function
 // This is really just a JWT token. We have a refresh token even. And so that's the stuff about the session. And we have the user itself. So we have when they were created, we have their email and very importantly we have this role here of authenticated,
 // which means that indeed the user is now authenticated. And so from now on, on all the next requests Supabase will automatically send this data to the server to basically let Supabase know that we are currently authenticated.
 

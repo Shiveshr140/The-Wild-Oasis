@@ -16,6 +16,7 @@ import { Toaster } from "react-hot-toast";
 import Booking from "./pages/Booking";
 import Checkin from "./pages/Checkin";
 import ProtectedRoute from "./ui/ProtectedRoute";
+import { DarkModeProvider } from "./context/DarkModeContext";
 
 ////******************************************* Setting Up Pages and Routes
 // "npm i react-router@6"
@@ -507,6 +508,42 @@ import ProtectedRoute from "./ui/ProtectedRoute";
 ////****************************************************  User Logout
 // create authentication/Logout.jsx, Header.jsx, apiAuth.jsx, useLogout.jsx
 
+////***************************************************  Building the Sign Up Form
+// Now, in this application, not everyone can create a new account. So, not everyone can sign up for this application, unlike, for example, something like Twitter or Reddit. So here in this app, only employees of the hotel should actually be users of this app. And so therefore, the idea is that these users can only be created inside the application.
+// And so this way new users are basically immediately verified by the existing hotel staff because only that stuff can actually create new users
+
+////////////////////////////////////////////////////////////////
+
+/////*********************************************** Implementing Dark Mode
+// Global styled &.dark-mode &.light-mode, make ui/ToggleDarkMode.jsx=>HeaderMenu,jsx, context/DarkModeContext.jsx
+// Logo.jsx
+
+/////************************************************* Building DashBoard Layout
+// So according to our list of requirements, the dashboard should render a list of check-ins and checkouts for the current day, some statistics about recent bookings, and also two charts on sales and on stay durations.
+// dashboard/dashboardLayout.jsx, Pages/Dashboad.jsx
+
+/////********************************************** Computing Recent Bookings and Stays
+// Now here it's really, really important to distinguish between these two types of data. So between bookings and stays. So the bookings are the actual sales. So for example, in the last 30 days the hotel might have sold 50 bookings online, but maybe 30 of these guests will only arrive and check into the hotel in the far future like month or even a year after they have booked the booking. Now, on the other hand, we have the stays.
+// So stays are the actual check-ins of guests as they arrive for their bookings in our hotel that we can identify stays simply by their start date together with the status of either checked in or checked out. So again, as a summary, a booking is an actual sale while a stay is a guest actually staying in the hotel.
+// Read getBookingAfterDate function in apiBookings.jsx and getToday function, make useRecentBookings.jsx
+// use in DashboardLayout.jsx, useRecentStays.jsx
+
+////******************************************** Displaying Statistics
+//// make dashboard/Stats.jsx => use Stat.jsx, dashboardLayout.jsx
+
+/////************************************************ Displaying a Line Chart With the Recharts Library
+// There are many chart libraries in the React ecosystem but one of the most popular ones and the most easy-to-use one as well is called Recharts.
+// npm i recharts, we will work on this sales chart right here.
+// SalesChart.js, add in dashboardLayout.jsx
+
+////****************************************** Displaying a Pie Chart
+// DurationChart.jsx
+
+///// **************************************** Displaying Stays for Current Day
+// we're gonna build in this application. So in this one, we will list all the guests that arrive at the hotel for check-in at the current day or that leave the hotel and need to check-out. And for that, we already have this TodayActivity component here.
+//// Add TodayActivity.jsx in DashboardLayout.jsx
+//// Make useTodayActivity.jsx
+
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -518,52 +555,54 @@ const queryClient = new QueryClient({
 
 function App() {
   return (
-    <QueryClientProvider client={queryClient}>
-      <ReactQueryDevtools initialIsOpen={false} />
-      <GlobalStyles />
-      <BrowserRouter>
-        <Routes>
-          <Route
-            element={
-              <ProtectedRoute>
-                <AppLayout />
-              </ProtectedRoute>
-            }
-          >
-            <Route path="dashboard" element={<Dashboard />} />
-            <Route path="account" element={<Account />} />
-            <Route path="cabins" element={<Cabins />} />
-            <Route path="bookings" element={<Bookings />} />
-            <Route path="bookings/:bookingId" element={<Booking />} />
-            <Route path="checkin/:bookingId" element={<Checkin />} />
-            <Route path="settings" element={<Settings />} />
-            <Route path="users" element={<Users />} />
-          </Route>
-          <Route index element={<Navigate replace to="dashboard" />} />
-          <Route path="login" element={<Login />} />
-          <Route path="*" element={<PageNotFound />} />
-        </Routes>
-      </BrowserRouter>
-      <Toaster
-        position="top-center"
-        gutter={12}
-        containerStyle={{ margin: "12px" }}
-        toastOptions={{
-          success: {
-            duration: 3000,
-          },
-          error: {
-            duration: 5000,
-          },
-          style: {
-            fontSize: "16px",
-            maxWidth: "500px",
-            padding: "16px 24px",
-            backgroundColor: "var(--color-grey-0)",
-          },
-        }}
-      />
-    </QueryClientProvider>
+    <DarkModeProvider>
+      <QueryClientProvider client={queryClient}>
+        <ReactQueryDevtools initialIsOpen={false} />
+        <GlobalStyles />
+        <BrowserRouter>
+          <Routes>
+            <Route
+              element={
+                <ProtectedRoute>
+                  <AppLayout />
+                </ProtectedRoute>
+              }
+            >
+              <Route path="dashboard" element={<Dashboard />} />
+              <Route path="account" element={<Account />} />
+              <Route path="cabins" element={<Cabins />} />
+              <Route path="bookings" element={<Bookings />} />
+              <Route path="bookings/:bookingId" element={<Booking />} />
+              <Route path="checkin/:bookingId" element={<Checkin />} />
+              <Route path="settings" element={<Settings />} />
+              <Route path="users" element={<Users />} />
+            </Route>
+            <Route index element={<Navigate replace to="dashboard" />} />
+            <Route path="login" element={<Login />} />
+            <Route path="*" element={<PageNotFound />} />
+          </Routes>
+        </BrowserRouter>
+        <Toaster
+          position="top-center"
+          gutter={12}
+          containerStyle={{ margin: "12px" }}
+          toastOptions={{
+            success: {
+              duration: 3000,
+            },
+            error: {
+              duration: 5000,
+            },
+            style: {
+              fontSize: "16px",
+              maxWidth: "500px",
+              padding: "16px 24px",
+              backgroundColor: "var(--color-grey-0)",
+            },
+          }}
+        />
+      </QueryClientProvider>
+    </DarkModeProvider>
   );
 }
 

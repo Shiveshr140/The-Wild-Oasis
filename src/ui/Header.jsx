@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import Logout from "../features/authentication/Logout";
+import HeaderMenu from "./HeaderMenu";
 
 const StyledHeader = styled.header`
   background-color: var(--color-grey-0);
@@ -11,9 +12,7 @@ const StyledHeader = styled.header`
 function Header() {
   return (
     <StyledHeader>
-      <header>
-        <Logout />
-      </header>
+      <HeaderMenu />
     </StyledHeader>
   );
 }

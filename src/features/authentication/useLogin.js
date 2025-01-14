@@ -20,7 +20,7 @@ import toast from "react-hot-toast";
 //   return { login, isLoading };
 // }
 
-////**************************  Autharization(removing spinner)
+////**************************  Autharization(removing spinner) s
 // Now after login yo will see the spinner but that should not be shown because this unnecessary
 // you will see the spinner rotating there. Saw that? Now in this case, that's not really necessary. It is necessary if we come back later to the page like so, then here, React Query will need to refetch the user's data. But immediately after we logged in,
 // that data has just been downloaded at that very moment. And so in that situation, it's not necessary to then run this again, so running this get current user again. Instead, React Query could simply get this data from the cache if we put it there immediately after logging in.

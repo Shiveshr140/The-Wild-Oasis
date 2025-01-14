@@ -1,4 +1,14 @@
 import styled from "styled-components";
+import Heading from "../../ui/Heading";
+import {
+  Cell,
+  Legend,
+  Pie,
+  PieChart,
+  ResponsiveContainer,
+  Tooltip,
+} from "recharts";
+import { useLocalStorageState } from "../../hooks/useLocalStorageState";
 
 const ChartBox = styled.div`
   /* Box */
@@ -6,8 +16,8 @@ const ChartBox = styled.div`
   border: 1px solid var(--color-grey-100);
   border-radius: var(--border-radius-md);
 
-  padding: 2.4rem 3.2rem;
-  grid-column: 3 / span 2;
+  padding: 2.4rem 0.2rem 2.4rem 1rem;
+  grid-column: 3 / 5;
 
   & > *:first-child {
     margin-bottom: 1.6rem;
@@ -129,4 +139,78 @@ function prepareData(startData, stays) {
     .filter((obj) => obj.value > 0);
 
   return data;
+}
+
+//// cx,cy: position of center , paddingAngle: spacing b/w cells
+
+// export default function DurationChart({ confirmedStays }) {
+//   return (
+//     <ChartBox>
+//       <Heading as="h2"> Stay duration summary </Heading>
+//       <ResponsiveContainer>
+//         <PieChart>
+//           <Pie
+//             data={startDataLight}
+//             nameKey="duration"
+//             dataKey="value"
+//             innerRadius={85}
+//             outerRadius={110}
+//             cx="40%"
+//             cy="50%"
+//             paddingAngle={3}
+//           />
+//         </PieChart>
+//       </ResponsiveContainer>
+//     </ChartBox>
+//   );
+// }
+
+/////** Adding color to each cells
+// Now we want each of these different cells here to have some different styling. So each of them should get the color that we defined up here. So that's why we have these color fields. So the way in which we do this is to actually not make this a self-closing element, but instead place one cell element
+// for each of the values in the array. So for each of the categories that we have here. So in this case, these five. So the way we do that is as always. So this is just a list now, and so we can map over it. So here, let's call each of them an entry.
+// And then for each of them, we can render a cell component. And so this is where we can then define the fill and the stroke.
+// we want also there a legend, so that we actually know what each of these colors represent.
+
+//// before using actual data makes the value 0 again
+
+export default function DurationChart({ confirmedStays }) {
+  const { isDarkMode } = useLocalStorageState();
+  const startData = isDarkMode ? startDataDark : startDataLight;
+  const data = prepareData(startData, confirmedStays);
+  return (
+    <ChartBox>
+      <Heading as="h2"> Stay duration summary </Heading>
+      <ResponsiveContainer width="100%" height={240}>
+        <PieChart>
+          <Pie
+            data={data}
+            nameKey="duration"
+            dataKey="value"
+            innerRadius={85}
+            outerRadius={110}
+            cx="40%"
+            cy="50%"
+            paddingAngle={3}
+          >
+            {data.map((entry) => (
+              <Cell
+                stroke={entry.color}
+                fill={entry.color}
+                key={entry.duration}
+              />
+            ))}
+          </Pie>
+          <Tooltip />
+          <Legend
+            verticalAlign="middle"
+            align="right"
+            width="30%"
+            layout="vertical"
+            iconSize={10}
+            iconType="circle"
+          />
+        </PieChart>
+      </ResponsiveContainer>
+    </ChartBox>
+  );
 }
